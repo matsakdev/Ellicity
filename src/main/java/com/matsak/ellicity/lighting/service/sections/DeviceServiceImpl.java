@@ -1,6 +1,6 @@
 package com.matsak.ellicity.lighting.service.sections;
 
-import com.matsak.ellicity.mqtt.MqttUtils;
+import com.matsak.ellicity.lighting.util.MqttUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class DeviceServiceImpl implements DeviceService{

@@ -1,12 +1,12 @@
-package com.matsak.ellicity.lighting.repository;
+package com.matsak.ellicity.lighting.repository.user;
 
-import com.matsak.ellicity.lighting.entity.User;
+import com.matsak.ellicity.lighting.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-
+@Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
-
     Boolean existsByEmail(String email);
 }

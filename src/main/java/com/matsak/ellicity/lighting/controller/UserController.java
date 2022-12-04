@@ -1,8 +1,8 @@
 package com.matsak.ellicity.lighting.controller;
 
-import com.matsak.ellicity.lighting.entity.User;
+import com.matsak.ellicity.lighting.entity.user.User;
 import com.matsak.ellicity.lighting.exceptions.ResourceNotFoundException;
-import com.matsak.ellicity.lighting.repository.UserRepository;
+import com.matsak.ellicity.lighting.repository.user.UserRepository;
 import com.matsak.ellicity.lighting.security.CurrentUser;
 import com.matsak.ellicity.lighting.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;

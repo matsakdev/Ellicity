@@ -1,20 +1,21 @@
-package com.matsak.ellicity.mqtt;
+package com.matsak.ellicity.lighting.util;
 
+import com.matsak.ellicity.lighting.dto.Measurement;
 import com.matsak.ellicity.lighting.service.sections.CircuitService;
 import com.matsak.ellicity.mqtt.brokers.HiveMQ;
 import com.matsak.ellicity.mqtt.brokers.MqttBroker;
+import com.matsak.ellicity.mqtt.message.MessageProcessor;
 import com.matsak.ellicity.mqtt.message.StatusMessage;
 import com.matsak.ellicity.mqtt.message.DataMessage;
 import com.matsak.ellicity.mqtt.message.ReceivedMessage;
 import com.matsak.ellicity.mqtt.message.MqttMessage;
-import com.matsak.ellicity.mqtt.settings.MqttSettings;
+import com.matsak.ellicity.lighting.config.MqttSettings;
+import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
-@Component
 public class MqttUtils {
-    @Autowired
-    private static CircuitService circuitService;
     private static MqttUtils instance;
     private MqttBroker broker;
     private MqttSettings settings = new MqttSettings("063852c6c19b4248a7e6c9db172d50ff.s1.eu.hivemq.cloud",
@@ -40,14 +41,15 @@ public class MqttUtils {
         else return broker;
     }
 
-    public static void messageHandler(MqttMessage message){
-        ReceivedMessage messageWithDefinedType = processMessage(message);
+    public static void messageHandler(MqttMessage message, MessageProcessor processor){
+        ReceivedMessage messageWithDefinedType = processMessage(message, processor);
         messageWithDefinedType.process();
     }
 
-    private static ReceivedMessage processMessage(MqttMessage message) {
-        if (message.getTopic() == "1") return new DataMessage(message);
-        if (message.getTopic() == "2") return new StatusMessage(message);
+    private static ReceivedMessage processMessage(MqttMessage message, MessageProcessor processor) {
+        //todo logic of creating messages
+        if (message.getPayload().startsWith("v:")) return new DataMessage(message, processor);
+        else if (message.getPayload().startsWith("O")) return new StatusMessage(message);
         else throw new IllegalArgumentException("Message doesn't follow the protocol: " + message.getPayload());
     }
 }

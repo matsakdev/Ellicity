@@ -1,33 +1,31 @@
 package com.matsak.ellicity.lighting.service.buffer;
 
-import com.matsak.ellicity.lighting.entity.measurements.Measurement;
+import com.matsak.ellicity.lighting.dto.Measurement;
 import com.matsak.ellicity.lighting.entity.sections.Circuit;
 import com.matsak.ellicity.lighting.exceptions.NoSuchBufferedCircuitException;
 import com.matsak.ellicity.lighting.service.sections.CircuitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.sql.Time;
-import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class MessageStorage {
-    @Value("${buffer.size}")
-    private static int bufferSize;
+public final class MessageStorage {
 
     @Autowired
     private static CircuitService circuitService;
-    private static Map<Circuit, CircuitBuffer> buffers;
+    private static Map<Circuit, CircuitBuffer> buffers = new HashMap<>();
     public static void cache(Circuit sender, Measurement measurement) {
         CircuitBuffer buffer = buffers.get(sender);
         if (buffer == null) {
-            buffer = new CircuitBuffer(bufferSize, sender);
+            buffer = new CircuitBuffer(sender);
             buffers.put(sender, buffer);
         }
         buffer.addMeasurement(measurement);
-        if (buffer.isFull()) saveBufferedData(sender, buffer.getMeasurements());
+
+        System.out.println(buffers);
     }
 
     public static boolean isStoring(Circuit circuit){
@@ -44,8 +42,24 @@ public class MessageStorage {
         }
     }
 
-    private static void saveBufferedData(Circuit sender, List<Measurement> measurements){
-        circuitService.saveCircuitBufferedData(sender, measurements);
-        buffers.get(sender).clearBuffer();
+    public static List<Measurement> getMeasurementsAndClearBuffer(Circuit circuit) {
+        CircuitBuffer buffer = Optional
+                .ofNullable(buffers.get(circuit))
+                .orElseThrow(
+                        () -> new IllegalArgumentException
+                                ("Circuit @id: " + circuit.getId() + " wasn't buffered")
+                );
+        List<Measurement> measurements = List.copyOf(buffer.getMeasurements());
+        buffer.clear();
+        return measurements;
+    }
+
+    public static boolean isBufferFull(Circuit sender) {
+         CircuitBuffer buffer = Optional.ofNullable(buffers.get(sender))
+                 .orElseThrow(() ->
+                         new IllegalArgumentException(
+                                 "This circuit was not buffered @id:"
+                                         + sender.getId()));
+         return buffer.isFull();
     }
 }

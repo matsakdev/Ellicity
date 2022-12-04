@@ -1,17 +1,13 @@
 package com.matsak.ellicity.lighting.controller;
 
-import com.matsak.ellicity.lighting.entity.User;
+import com.matsak.ellicity.lighting.entity.user.User;
 import com.matsak.ellicity.lighting.exceptions.BadRequestException;
 import com.matsak.ellicity.lighting.payload.*;
-import com.matsak.ellicity.lighting.payload.auth.AuthResponse;
-import com.matsak.ellicity.lighting.payload.auth.LoginRequest;
-import com.matsak.ellicity.lighting.payload.auth.SignUpManagerRequest;
-import com.matsak.ellicity.lighting.payload.auth.SignUpRequest;
-import com.matsak.ellicity.lighting.repository.UserRepository;
+import com.matsak.ellicity.lighting.payload.auth.*;
+import com.matsak.ellicity.lighting.repository.user.UserRepository;
 import com.matsak.ellicity.lighting.security.AuthProvider;
 import com.matsak.ellicity.lighting.security.Authority;
 import com.matsak.ellicity.lighting.security.TokenProvider;
-import com.sun.istack.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -69,19 +65,30 @@ public class AuthController {
 
     @PostMapping("/signup/manager")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> registerManager(@Valid @RequestBody SignUpManagerRequest signUpRequest) {
-        return processRegistration(signUpRequest);
+    public ResponseEntity<?> registerModerator(@Valid @RequestBody SignUpModeratorRequest request) {
+        if(userRepository.existsByEmail(request.getEmail())) {
+            throw new BadRequestException("Email address already in use.");
+        }
+
+        User user = createNewUser(request, Authority.ROLE_MANAGER);
+
+        User result = userRepository.save(user);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath().path("/user/me")
+                .buildAndExpand(result.getId()).toUri();
+
+        return ResponseEntity.created(location)
+                .body(new ApiResponse(true, "User registered successfully@"));
     }
 
-    @NotNull
     private ResponseEntity<?> processRegistration(SignUpRequest signUpRequest) {
-        User newUser = new User();
         String email = signUpRequest.getEmail();
         if(userRepository.existsByEmail(email)) {
             throw new BadRequestException("Email address already in use.");
         }
 
-        User user = newUser;
+        User user = createNewUser(signUpRequest, Authority.ROLE_USER);
         User result = userRepository.save(user);
 
         URI location = ServletUriComponentsBuilder

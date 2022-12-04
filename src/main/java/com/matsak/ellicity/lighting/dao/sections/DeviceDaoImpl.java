@@ -1,4 +1,7 @@
 package com.matsak.ellicity.lighting.dao.sections;
 
-public class DeviceDaoImpl implements DeviceDao {
+import org.springframework.stereotype.Component;
+
+@Component
+public class DeviceDaoImpl {
 }

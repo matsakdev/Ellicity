@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
@@ -22,13 +23,7 @@ import java.io.IOException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment =
-        SpringBootTest.WebEnvironment.MOCK,
-        classes = AuthController.class)
-@AutoConfigureMockMvc
-@TestPropertySource(
-        locations = "classpath:local.properties")
+@DataJpaTest
 class AuthControllerTest {
 
     @Value("${host}")

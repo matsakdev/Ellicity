@@ -1,14 +1,19 @@
 package com.matsak.ellicity.lighting.service.buffer;
 
-import com.matsak.ellicity.lighting.entity.measurements.Measurement;
+import com.matsak.ellicity.lighting.dto.Measurement;
 import com.matsak.ellicity.lighting.entity.sections.Circuit;
+import org.springframework.beans.factory.annotation.Value;
 
-import java.sql.Time;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
+import java.util.Objects;
+import java.util.Properties;
 
 public class CircuitBuffer {
+    
+    @Value("${buffer.size}")
+    private static final int BUFFER_DEFAULT_SIZE = 2;
+    
     private int bufferSize;
     private Circuit circuit;
     private List<Measurement> measurements;
@@ -21,9 +26,16 @@ public class CircuitBuffer {
         return measurements;
     }
 
-    public CircuitBuffer(int bufferSize, Circuit circuit) {
+    public CircuitBuffer(Circuit circuit, int bufferSize) {
         this.bufferSize = bufferSize;
         this.circuit = circuit;
+        this.measurements = new ArrayList<>();
+    }
+
+    public CircuitBuffer(Circuit circuit) {
+        this.bufferSize = BUFFER_DEFAULT_SIZE;
+        this.circuit = circuit;
+        this.measurements = new ArrayList<>();
     }
 
     public void addMeasurement(Measurement measurement){
@@ -32,10 +44,24 @@ public class CircuitBuffer {
     }
 
     public boolean isFull(){
+        System.out.println("BUFFER IS " + measurements.size());
         return (measurements.size() >= bufferSize);
     }
 
-    public void clearBuffer(){
+    public void clear(){
         measurements.clear();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CircuitBuffer)) return false;
+        CircuitBuffer buffer = (CircuitBuffer) o;
+        return bufferSize == buffer.bufferSize && Objects.equals(circuit, buffer.circuit) && Objects.equals(measurements, buffer.measurements);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(bufferSize, circuit, measurements);
     }
 }

@@ -1,26 +1,27 @@
 package com.matsak.ellicity.lighting.service.sections;
 
-import com.matsak.ellicity.lighting.dao.sections.SystemDao;
-import com.matsak.ellicity.lighting.entity.measurements.Measurement;
+import com.matsak.ellicity.lighting.dto.Measurement;
 import com.matsak.ellicity.lighting.entity.sections.System;
-import com.matsak.ellicity.lighting.repository.SystemRepository;
-import com.matsak.ellicity.mqtt.MqttUtils;
+import com.matsak.ellicity.lighting.entity.sections.UserSystems;
+import com.matsak.ellicity.lighting.repository.systeminfo.SystemRepository;
+import com.matsak.ellicity.lighting.repository.systeminfo.UserSystemsRepository;
+import com.matsak.ellicity.lighting.util.MqttUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Time;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class SystemServiceImpl implements SystemService{
 
     @Autowired
-    MqttUtils mqtt;
-
-    @Autowired
     SystemRepository systemRepository;
 
+    @Autowired
+    UserSystemsRepository userSystemsRepository;
 
     @Override
     public void turnOn() {
@@ -45,5 +46,21 @@ public class SystemServiceImpl implements SystemService{
     @Override
     public List<System> getAllSystems() {
         return null;
+    }
+
+    @Override
+    public void connectUser(Long userId, String systemName, String passKey) {
+        Optional<System> systemOptional = systemSearch(systemName);
+        if (systemOptional.isPresent() && systemValidated(systemOptional.get(), passKey)) {
+            userSystemsRepository.save(new UserSystems(userId, systemOptional.get()));
+        }
+    }
+
+    private Optional<System> systemSearch(String systemName) {
+        return systemRepository.findByName(systemName);
+    }
+
+    private boolean systemValidated(System system, String passKey) {
+        return system.getPassKey().equals(passKey);
     }
 }

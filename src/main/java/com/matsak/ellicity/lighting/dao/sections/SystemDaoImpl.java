@@ -1,8 +1,9 @@
 package com.matsak.ellicity.lighting.dao.sections;
 
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public class SystemDaoImpl implements SystemDao {
+@Component
+public class SystemDaoImpl {
 
 }

@@ -1,18 +1,17 @@
 package com.matsak.ellicity.lighting.entity.sections;
 
-import com.matsak.ellicity.lighting.Activable;
 import com.matsak.ellicity.lighting.Electric;
-import com.matsak.ellicity.lighting.SmartUsage;
-import com.matsak.ellicity.lighting.entity.User;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "[System]")
 public class System implements Electric{
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private Long id;
     @NotNull
@@ -22,28 +21,31 @@ public class System implements Electric{
     @Column(name="passKey")
     private String passKey;
 
-    public List<User> getUsers() {
-        return users;
-    }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
 
-    @NotNull
-    @ManyToMany
-    @JoinTable(name="Users_Systems",
-            joinColumns = @JoinColumn(name="system_id"),
-            inverseJoinColumns = @JoinColumn(name="user_id"))
-    private List<User> users;
-    @OneToMany(mappedBy = "system", fetch = FetchType.LAZY)
+//    public List<User> getUsers() {
+//        return users;
+//    }
+//
+//    public void setUsers(List<User> users) {
+//        this.users = users;
+//    }
+
+//    @NotNull
+//    @ManyToMany
+//    @JoinTable(name="Users_Systems",
+//            joinColumns = @JoinColumn(name="system_id"),
+//            inverseJoinColumns = @JoinColumn(name="user_id"))
+//    private List<User> users;
+    @OneToMany(mappedBy = "system", fetch = FetchType.EAGER)
     private List<Circuit> electricalCircuits;
 
 
     public System(){}
 
-    public System(Long id) {
-        this.id = id;
+    public System(String name, String passKey) {
+        this.name = name;
+        this.passKey = passKey;
     }
 
     public String getName() {
@@ -74,75 +76,25 @@ public class System implements Electric{
         this.electricalCircuits = electricalCircuits;
     }
 
-//    @Override
-//    public double getInstantVoltage() {
-//        return electricalCircuits.stream()
-//                .map(Circuit::getInstantVoltage)
-//                .reduce((unitVoltage, sum) -> sum += unitVoltage)
-//                .orElse((double) 0);
-//    }
-//
-//    @Override
-//    public double getInstantCurrent() {
-//        return electricalCircuits.stream()
-//                .map(Circuit::getInstantCurrent)
-//                .reduce((unitCurrent, sum) -> sum += unitCurrent)
-//                .orElse((double) 0);
-//    }
-//
-//    @Override
-//    public double getInstantResistance() {
-//        return electricalCircuits.stream()
-//                .map(Circuit::getInstantResistance)
-//                .reduce((unitResistance, sum) -> sum += unitResistance)
-//                .orElse((double) 0);
-//    }
-//
-//    @Override
-//    public double getInstantPower() {
-//        return electricalCircuits.stream()
-//                .map(Circuit::getInstantPower)
-//                .reduce((unitPower, sum) -> sum += unitPower)
-//                .orElse((double) 0);
-//    }
-//
-//    @Override
-//    public void enablePhotodetector() {
-//        electricalCircuits.forEach(Circuit::enablePhotodetector);
-//    }
-//
-//    @Override
-//    public void disablePhotodetector() {
-//        electricalCircuits.forEach(Circuit::disablePhotodetector);
-//    }
-//
-//    @Override
-//    public void enableMotionSensor() {
-//        electricalCircuits.forEach(Circuit::enableMotionSensor);
-//    }
-//
-//    @Override
-//    public void disableMotionSensor() {
-//        electricalCircuits.forEach(Circuit::disableMotionSensor);
-//    }
-//
-//    @Override
-//    public void enableLightWithKey(String key) {
-//
-//    }
-//
-//    @Override
-//    public void disableLightWithKey(String key) {
-//
-//    }
-//
-//    @Override
-//    public void turnOn() {
-//
-//    }
-//
-//    @Override
-//    public void turnOff() {
-//
-//    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof System)) return false;
+        System system = (System) o;
+        return Objects.equals(id, system.id) && Objects.equals(name, system.name) && Objects.equals(passKey, system.passKey);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, passKey);
+    }
+
+    @Override
+    public String toString() {
+        return "System{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", passKey='" + passKey + '\'' +
+                '}';
+    }
 }

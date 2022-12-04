@@ -1,8 +1,11 @@
 package com.matsak.ellicity.lighting.controller;
 
 import com.matsak.ellicity.lighting.entity.sections.System;
+import com.matsak.ellicity.lighting.payload.ConnectUserToSystemRequest;
+import com.matsak.ellicity.lighting.security.UserPrincipal;
 import com.matsak.ellicity.lighting.service.sections.SystemServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +21,12 @@ public class SystemController {
     @GetMapping("/all")
     private List<System> getAllSystems(){
         return systemService.getAllSystems();
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<?> connectUserWithSystem(@RequestBody ConnectUserToSystemRequest requestBody, @AuthenticationPrincipal UserPrincipal user) {
+        systemService.connectUser(user.getId(), requestBody.getSystemName(), requestBody.getPassKey());
+        return ResponseEntity.ok().build();
     }
 
 //    @GetMapping("/{systemId}/instant_consumption")

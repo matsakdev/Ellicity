@@ -1,6 +1,6 @@
 package com.matsak.ellicity.lighting.payload.websocket.response;
 
-import com.matsak.ellicity.lighting.entity.measurements.Measurement;
+import com.matsak.ellicity.lighting.dto.Measurement;
 import com.matsak.ellicity.lighting.entity.sections.Circuit;
 import com.matsak.ellicity.lighting.entity.sections.System;
 

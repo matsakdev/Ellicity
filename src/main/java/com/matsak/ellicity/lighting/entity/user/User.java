@@ -1,17 +1,16 @@
-package com.matsak.ellicity.lighting.entity;
+package com.matsak.ellicity.lighting.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.matsak.ellicity.lighting.entity.sections.System;
 import com.matsak.ellicity.lighting.security.AuthProvider;
 import com.matsak.ellicity.lighting.security.Authority;
 import com.sun.istack.NotNull;
-import org.checkerframework.checker.units.qual.C;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "[User]")
+@Table(name = "[User]", schema = "user_db")
 public class User {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -34,8 +33,8 @@ public class User {
     @Column(name="password")
     private String password;
 
-    @ManyToMany(mappedBy = "users")
-    List<System> userSystems;
+    @Transient
+    List<System> systems;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -80,11 +79,11 @@ public class User {
     }
 
     public List<System> getUserSystems() {
-        return userSystems;
+        return systems;
     }
 
     public void setUserSystems(List<System> userSystems) {
-        this.userSystems = userSystems;
+        this.systems = userSystems;
     }
 
     public boolean isEmailVerified() {

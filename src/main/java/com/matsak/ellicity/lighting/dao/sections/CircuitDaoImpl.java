@@ -1,9 +1,9 @@
 package com.matsak.ellicity.lighting.dao.sections;
 
 import com.matsak.ellicity.lighting.dao.BaseDaoImpl;
-import com.matsak.ellicity.lighting.entity.measurements.Measurement;
+import com.matsak.ellicity.lighting.dto.Measurement;
 import com.matsak.ellicity.lighting.entity.sections.Circuit;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Repository
-public class CircuitDaoImpl extends BaseDaoImpl<Circuit, Long> implements CircuitDao {
+@Component
+public class CircuitDaoImpl extends BaseDaoImpl<Circuit> implements CircuitDao {
 
-    @PersistenceContext
+    @PersistenceContext(name = "systemInfo")
     EntityManager entityManager;
 
     @Override

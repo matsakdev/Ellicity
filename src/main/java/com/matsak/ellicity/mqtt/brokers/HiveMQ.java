@@ -4,15 +4,18 @@ package com.matsak.ellicity.mqtt.brokers;
 import com.hivemq.client.mqtt.MqttClient;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient;
 import com.matsak.ellicity.mqtt.message.MqttMessage;
-import com.matsak.ellicity.mqtt.settings.MqttSettings;
+import com.matsak.ellicity.lighting.config.MqttSettings;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.function.Consumer;
 
 import static com.hivemq.client.mqtt.MqttGlobalPublishFilter.ALL;
 import static java.nio.charset.StandardCharsets.UTF_8;
-
+@Component
 public class HiveMQ implements MqttBroker {
     Mqtt5BlockingClient client;
+    @Autowired
     private final MqttSettings settings;
 
     public HiveMQ(MqttSettings settings){

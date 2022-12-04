@@ -2,8 +2,8 @@ package com.matsak.ellicity.lighting.security.oauth2;
 
 import com.matsak.ellicity.lighting.exceptions.OAuth2AuthenticationProcessingException;
 import com.matsak.ellicity.lighting.security.AuthProvider;
-import com.matsak.ellicity.lighting.entity.User;
-import com.matsak.ellicity.lighting.repository.UserRepository;
+import com.matsak.ellicity.lighting.entity.user.User;
+import com.matsak.ellicity.lighting.repository.user.UserRepository;
 import com.matsak.ellicity.lighting.security.Authority;
 import com.matsak.ellicity.lighting.security.UserPrincipal;
 import com.matsak.ellicity.lighting.security.oauth2.user.OAuth2UserInfo;

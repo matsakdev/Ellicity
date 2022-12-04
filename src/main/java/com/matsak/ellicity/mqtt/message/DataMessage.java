@@ -1,38 +1,33 @@
 package com.matsak.ellicity.mqtt.message;
 
-import com.matsak.ellicity.lighting.entity.measurements.Current;
-import com.matsak.ellicity.lighting.entity.measurements.Measurement;
-import com.matsak.ellicity.lighting.entity.measurements.Voltage;
-import com.matsak.ellicity.lighting.entity.sections.Circuit;
-import com.matsak.ellicity.lighting.entity.sections.System;
-import com.matsak.ellicity.lighting.service.sections.CircuitService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.matsak.ellicity.lighting.dto.Current;
+import com.matsak.ellicity.lighting.dto.Measurement;
+import com.matsak.ellicity.lighting.dto.Voltage;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
-import java.sql.Time;
-import java.time.LocalTime;
-
+import java.time.*;
+//todo dependency injection correction. DataMessage depends on Service
 public class DataMessage implements ReceivedMessage {
     MqttMessage message;
-    private Time time;
+    private LocalDateTime time;
     private Voltage voltage;
     private Current current;
-
-    @Autowired
-    CircuitService circuitService;
-
-    public DataMessage(MqttMessage message) {
+    MessageProcessor processor;
+    public DataMessage(MqttMessage message, MessageProcessor processor){
         this.message = message;
+        this.processor = processor;
     }
 
     @Override
     public void process() {
         splitPayload();
-
-        circuitService.saveCircuitData(getSender(), new Measurement(Time.valueOf(LocalTime.now()), voltage, current));
+        processor.processMessage(getSender(), new Measurement(time, voltage, current));
     }
 
-    public Circuit getSender() {
-        return topicToSenderConverter(message.getTopic());
+    public Long getSender() {
+        return topicToSenderIdConverter(message.getTopic());
     }
 
     private void splitPayload() {
@@ -41,6 +36,7 @@ public class DataMessage implements ReceivedMessage {
         double value2 = subtopic[1].transform(this::transformTextMeasurementToDoubleValue);
         String value1Label = subtopic[0].toLowerCase();
         String value2Label = subtopic[1].toLowerCase();
+        time = LocalDateTime.now(); //todo get time
         if (value1Label.startsWith("v:") && value2Label.startsWith("a:")){
             voltage = new Voltage(value1);
             current = new Current(value2);
@@ -61,17 +57,23 @@ public class DataMessage implements ReceivedMessage {
         }
     }
 
-    private Circuit topicToSenderConverter(String topic) {
+    private Long topicToSenderIdConverter(String topic) {
         String[] subtopics = topic.split("/");
-        Circuit circuit = null;
-        try{
-            circuit = new Circuit(
-                    new System(Long.valueOf(subtopics[0]))
-            );
-        }
-        catch (NumberFormatException e) {
-            //todo log
-        }
-        return circuit;
+        //todo dependency injection and normal logic
+
+//        Circuit circuit = circuitService.getCircuitById(Long.parseLong(subtopics[1]));
+//        try{
+////            circuit = new Circuit(
+////                    new System(Long.valueOf(subtopics[0]))
+////            );
+//            circuit = new Circuit(
+//                    new System()
+//            );
+//        }
+//        catch (NumberFormatException e) {
+//            //todo log
+//        }
+        System.out.println("Circuit:" + subtopics[1]);
+        return Long.parseLong(subtopics[1]);
     }
 }

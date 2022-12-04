@@ -1,16 +1,14 @@
 package com.matsak.ellicity.lighting.entity.sections;
 
-import com.matsak.ellicity.lighting.Electric;
-import com.matsak.ellicity.lighting.SmartUsage;
-import com.matsak.ellicity.mqtt.MqttUtils;
-import com.matsak.ellicity.mqtt.brokers.MqttBroker;
-
 import javax.persistence.*;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
+
 @Entity
+@Table(name = "CIRCUIT")
 public class Circuit{
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name="name")
@@ -24,6 +22,11 @@ public class Circuit{
     public Circuit(){}
 
     public Circuit(System system) {
+        this.system = system;
+    }
+
+    public Circuit(String name, System system) {
+        this.name = name;
         this.system = system;
     }
 
@@ -41,6 +44,19 @@ public class Circuit{
 
     public void setSystem(System system) {
         this.system = system;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Circuit)) return false;
+        Circuit circuit = (Circuit) o;
+        return Objects.equals(id, circuit.id) && Objects.equals(name, circuit.name) && Objects.equals(system, circuit.system);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, system);
     }
 
     @Override

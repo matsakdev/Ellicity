@@ -1,6 +1,6 @@
 package com.matsak.ellicity.lighting;
 
-import com.matsak.ellicity.lighting.entity.measurements.Measurement;
+import com.matsak.ellicity.lighting.dto.Measurement;
 
 import java.sql.Time;
 import java.util.Map;
