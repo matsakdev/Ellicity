@@ -15,6 +15,7 @@ public class Current {
     }
 
     public void setValue(double value) {
+        //for 3 digits after the point
         this.value = value;
     }
 }

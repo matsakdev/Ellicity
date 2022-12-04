@@ -7,6 +7,7 @@ import com.matsak.ellicity.lighting.service.sections.CircuitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,12 +35,19 @@ public final class MessageStorage {
 
     public static Measurement getInstantMeasurement(Circuit circuit){
         if (!isStoring(circuit))
-            throw new NoSuchBufferedCircuitException("The circuit "+ circuit + "was not buffered. " +
+            throw new NoSuchBufferedCircuitException("The circuit " + circuit + " was not buffered. " +
                     "Try to check isStored() method before calling.");
         else {
             List<Measurement> measurements = buffers.get(circuit).getMeasurements();
             return measurements.get(measurements.size() - 1);
         }
+    }
+
+    public static List<Measurement> getBufferedMeasurements(Circuit circuit) {
+        if (isStoring(circuit)) {
+            return buffers.get(circuit).getMeasurements();
+        }
+        return Collections.emptyList();
     }
 
     public static List<Measurement> getMeasurementsAndClearBuffer(Circuit circuit) {

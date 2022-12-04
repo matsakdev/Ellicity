@@ -8,45 +8,6 @@ import org.springframework.data.mongodb.config.*;
 import org.springframework.data.mongodb.repository.config.*;
 
 import java.util.function.*;
-
-//@EnableJpaRepositories(basePackages = "com.matsak.ellicity.lighting.repository.measurements",
-//        entityManagerFactoryRef = "measurementsEntityManagerFactory", transactionManagerRef = "measurementsTransactionManager")
-//@Configuration
-//public class MeasurementsDatabaseConfig {
-//
-//    @Bean
-//    @ConfigurationProperties("spring.measurements.datasource")
-//    public DataSourceProperties measurementsDataSourceProperties() {
-//        return new DataSourceProperties();
-//    }
-//
-//    @Bean
-//    public DataSource measurementsDataSource(
-//            @Qualifier("measurementsDataSourceProperties")  DataSourceProperties measurementsDataSourceProperties) {
-//        return measurementsDataSourceProperties.initializeDataSourceBuilder()
-//                .type(HikariDataSource.class)
-//                .build();
-//    }
-//
-//    @Bean
-//    public LocalContainerEntityManagerFactoryBean measurementsEntityManagerFactory(
-//            @Qualifier("measurementsDataSource") DataSource measurementsDataSource,
-//            EntityManagerFactoryBuilder builder) {
-//        return builder.dataSource(measurementsDataSource)
-//                .packages(Measurement.class)
-//                .persistenceUnit("measurements")
-//                .build();
-//    }
-//
-//    @Bean
-//    public PlatformTransactionManager measurementsTransactionManager(
-//            @Qualifier("measurementsEntityManagerFactory")
-//            LocalContainerEntityManagerFactoryBean measurementsEntityManagerFactory) {
-//        return new JpaTransactionManager(measurementsEntityManagerFactory.getObject());
-//
-//    }
-//}
-
 @Configuration
 @EnableMongoRepositories(basePackages = "com.matsak.ellicity.lighting.repository.measurements")
 @PropertySource("classpath:mongo.properties")

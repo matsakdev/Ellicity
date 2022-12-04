@@ -14,6 +14,7 @@ public class Voltage {
     }
 
     public void setValue(double value) {
-        this.value = value;
+        //for 3 digits after the point
+        this.value = Math.round(value * 1000) / 1000.0;
     }
 }

@@ -6,6 +6,8 @@ import com.matsak.ellicity.lighting.repository.measurements.MeasurementsReposito
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
