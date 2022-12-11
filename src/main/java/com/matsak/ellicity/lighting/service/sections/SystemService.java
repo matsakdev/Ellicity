@@ -3,6 +3,7 @@ package com.matsak.ellicity.lighting.service.sections;
 import com.matsak.ellicity.lighting.Activable;
 import com.matsak.ellicity.lighting.dto.Measurement;
 import com.matsak.ellicity.lighting.entity.sections.System;
+import com.matsak.ellicity.lighting.entity.sections.UserSystems;
 
 import java.sql.Time;
 import java.util.List;
@@ -13,4 +14,9 @@ public interface SystemService extends Activable {
     Measurement getLastMeasurement(System system);
     Map<Time, Measurement> getMeasurementsByTimeForLastDays(int daysAmount, System system);
     void connectUser(Long userId, String systemName, String passKey);
+    List<System> getUserSystems(Long userId);
+    List<UserSystems> getAllUsersSystems();
+    List<UserSystems> getUserSystemsByUser(Long userId);
+
+    System getSystemById(Long systemId, Long userId);
 }

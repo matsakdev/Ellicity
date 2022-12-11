@@ -13,7 +13,6 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
             " JOIN FETCH System sys ON sys.id = us.id.systemId" +
             " JOIN FETCH Circuit circ ON circ.system.id = sys.id" +
             " JOIN FETCH Device dev ON dev.circuit.id = circ.id" +
-            " WHERE us.id.userId = :userId AND dev.id = :deviceId " +
-            " AND sys.id = :systemId AND circ.id = :circuitId")
-    Optional<Device> getUserDeviceById(Long userId, Long deviceId, Long systemId, Long circuitId);
+            " WHERE us.id.userId = :userId AND dev.id = :deviceId")
+    Optional<Device> getUserDeviceById(Long userId, Long deviceId);
 }

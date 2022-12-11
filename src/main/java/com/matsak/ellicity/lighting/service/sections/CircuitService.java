@@ -24,4 +24,6 @@ public interface CircuitService{
     void createCircuit(Circuit circuit);
     List<Measurement> getLastMeasurements(int amount, Long circuitId);
     List<Measurement> getMeasurementsByDate(LocalDateTime date, Long circuitId);
+
+    List<Circuit> getUserCircuitsBySystemId(Long userId, Long systemId);
 }

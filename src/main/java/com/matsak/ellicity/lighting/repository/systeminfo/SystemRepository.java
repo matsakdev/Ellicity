@@ -12,4 +12,9 @@ public interface SystemRepository extends JpaRepository<System, Long> {
     @Query("SELECT us FROM UserSystems us WHERE us.id.userId=:id")
     List<System> findByUserId(Long id);
     Optional<System> findByName(String name);
+
+    @Query("SELECT sys FROM System sys" +
+            " JOIN FETCH UserSystems us ON us.id.systemId=sys.id" +
+            " WHERE us.id.systemId=:systemId AND us.id.userId=:userId")
+    Optional<System> findByUserId(Long systemId, Long userId);
 }

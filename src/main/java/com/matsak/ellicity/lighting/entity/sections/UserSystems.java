@@ -38,6 +38,14 @@ public class UserSystems {
             return systemId;
         }
 
+        public void setUserId(Long userId) {
+            this.userId = userId;
+        }
+
+        public void setSystemId(Long systemId) {
+            this.systemId = systemId;
+        }
+
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
@@ -68,5 +76,13 @@ public class UserSystems {
         this.system = system;
 
         this.id = new Id(userId, system.getId());
+    }
+
+    public Id getId() {
+        return id;
+    }
+
+    public void setId(Id id) {
+        this.id = id;
     }
 }

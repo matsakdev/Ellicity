@@ -2,6 +2,7 @@ package com.matsak.ellicity.lighting.config;
 
 import com.matsak.ellicity.lighting.entity.sections.Circuit;
 import com.matsak.ellicity.lighting.entity.sections.Device;
+import com.matsak.ellicity.lighting.entity.sections.UserSystems;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -49,8 +50,9 @@ public class SystemInfoDatabaseConfig {
         Map<String, String> properties = new HashMap<>();
         properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
         properties.put("hibernate.hbm2ddl.auto", "update");
+        properties.put("hibernate.show.sql", "true");
         return builder.dataSource(systemInfoDataSource)
-                .packages(Circuit.class, Device.class, System.class)
+                .packages(Circuit.class, Device.class, System.class, UserSystems.class)
                 .persistenceUnit("systemInfo")
                 .properties(properties)
                 .build();

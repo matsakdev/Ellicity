@@ -1,5 +1,6 @@
 package com.matsak.ellicity.lighting.entity.sections;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.matsak.ellicity.lighting.Electric;
 import com.sun.istack.NotNull;
 
@@ -38,6 +39,7 @@ public class System implements Electric{
 //            inverseJoinColumns = @JoinColumn(name="user_id"))
 //    private List<User> users;
     @OneToMany(mappedBy = "system", fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<Circuit> electricalCircuits;
 
 

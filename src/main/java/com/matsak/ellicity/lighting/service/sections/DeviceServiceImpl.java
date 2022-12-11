@@ -24,8 +24,8 @@ public class DeviceServiceImpl implements DeviceService{
     CircuitRepository circuitRepository;
 
     @Override
-    public Device getValidatedDevice(Long systemId, Long circuitId, Long deviceId, UserPrincipal principal) throws IllegalArgumentException {
-        Optional<Device> device = deviceRepository.getUserDeviceById(principal.getId(), deviceId, systemId, circuitId);
+    public Device getValidatedDevice(Long deviceId, UserPrincipal principal) throws IllegalArgumentException {
+        Optional<Device> device = deviceRepository.getUserDeviceById(principal.getId(), deviceId);
         if (device.isEmpty()) {
             throw new IllegalArgumentException("Device does not exist @id: " + deviceId + " for user @id: " + principal.getId());
         }
@@ -39,7 +39,6 @@ public class DeviceServiceImpl implements DeviceService{
             updateDeviceAfterAction(device, requestedAction);
             updateDeviceDbState(device);
     }
-
 
     private void publishAction(Action action, String topic) {
         MqttUtils

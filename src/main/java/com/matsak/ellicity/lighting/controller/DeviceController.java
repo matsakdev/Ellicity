@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/{system}/{circuit}")
+@RequestMapping("/devices")
 public class DeviceController {
 
     @Autowired
@@ -26,14 +26,13 @@ public class DeviceController {
     @Autowired
     DeviceService deviceService;
 
-    @PostMapping("/{device}/{action}")
-    public ResponseEntity<?> enableDeviceAction(@PathVariable(name = "system") Long systemId,
-                                             @PathVariable(name = "circuit") Long circuitId,
-                                             @PathVariable(name = "device") Long deviceId,
+    @PostMapping("/{id}/{action}")
+    public ResponseEntity<?> processDeviceAction(
+                                             @PathVariable(name = "id") Long deviceId,
                                              @PathVariable(name = "action") String action,
                                              @AuthenticationPrincipal UserPrincipal principal) {
         Action requestedAction = Action.valueOf(action.toUpperCase()); //todo IllegalArgumentException !!!
-        Device device = deviceService.getValidatedDevice(systemId, circuitId, deviceId, principal);
+        Device device = deviceService.getValidatedDevice(deviceId, principal);
         deviceService.sendActionToDevice(device, requestedAction); //todo Exception handler
         return ResponseEntity.ok(new ApiResponse(true, action.toUpperCase()));
     }

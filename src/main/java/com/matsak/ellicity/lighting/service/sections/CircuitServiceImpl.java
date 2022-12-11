@@ -92,6 +92,16 @@ public class CircuitServiceImpl implements CircuitService {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public List<Circuit> getUserCircuitsBySystemId(Long userId, Long systemId) {
+        List<Circuit> circuits = circuitRepository.findAllCircuitsByUserIdAndSystemId(userId, systemId);
+        if (circuits.isEmpty()) {
+                throw new IllegalArgumentException("Circuits does not exist for @systemId: " +
+                        systemId + " and  @userId: " + userId);
+        }
+        return circuits;
+    }
+
     private void fillLastMeasurements(List<Measurement> measurements, int amount, Circuit circuit) {
         if (MessageStorage.isStoring(circuit)) {
             measurements.add(MessageStorage.getInstantMeasurement(circuit));

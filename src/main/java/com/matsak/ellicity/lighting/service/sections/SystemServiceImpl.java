@@ -56,6 +56,28 @@ public class SystemServiceImpl implements SystemService{
         }
     }
 
+    @Override
+    public List<System> getUserSystems(Long id) {
+        return userSystemsRepository.findSystemsByUser(id);
+    }
+
+    @Override
+    public List<UserSystems> getAllUsersSystems() {
+        return userSystemsRepository.findAll();
+    }
+
+    @Override
+    public List<UserSystems> getUserSystemsByUser(Long userId) {
+        return userSystemsRepository.findUserSystemsByUser(userId);
+    }
+
+    @Override
+    public System getSystemById(Long systemId, Long userId) {
+        return systemRepository.findByUserId(systemId, userId)
+                .orElseThrow(() -> new IllegalArgumentException("System @id: " + systemId + " does not connected with @userId: " + userId));
+    }
+
+
     private Optional<System> systemSearch(String systemName) {
         return systemRepository.findByName(systemName);
     }
