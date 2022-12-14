@@ -5,7 +5,6 @@ import com.matsak.ellicity.lighting.entity.sections.System;
 import com.matsak.ellicity.lighting.entity.sections.UserSystems;
 import com.matsak.ellicity.lighting.repository.systeminfo.SystemRepository;
 import com.matsak.ellicity.lighting.repository.systeminfo.UserSystemsRepository;
-import com.matsak.ellicity.lighting.util.MqttUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -72,9 +71,32 @@ public class SystemServiceImpl implements SystemService{
     }
 
     @Override
-    public System getSystemById(Long systemId, Long userId) {
-        return systemRepository.findByUserId(systemId, userId)
-                .orElseThrow(() -> new IllegalArgumentException("System @id: " + systemId + " does not connected with @userId: " + userId));
+    public System getSystemById(Long systemId) {
+        return systemRepository.findById(systemId)
+                .orElseThrow(() -> new IllegalArgumentException("System does not exist @id: " + systemId));
+    }
+
+    @Override
+    public List<System> getAllSystemsByUserId(Long userId) {
+        return systemRepository.findAllSystemsByUserId(userId);
+    }
+
+    @Override
+    public System getSystem(Long systemId) {
+        return systemRepository.findById(systemId)
+                .orElseThrow(() -> new IllegalArgumentException("System @id: " + systemId + " does not exists"));
+    }
+
+
+
+    @Override
+    public boolean isUserConnected(Long userId, String systemName) {
+        return userSystemsRepository.isSystemConnectedWithUser(systemName, userId);
+    }
+
+    @Override
+    public boolean isUserConnected(Long userId, Long systemId) {
+        return userSystemsRepository.isSystemConnectedWithUser(systemId, userId);
     }
 
 

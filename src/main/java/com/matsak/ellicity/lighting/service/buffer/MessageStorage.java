@@ -18,6 +18,7 @@ public final class MessageStorage {
     @Autowired
     private static CircuitService circuitService;
     private static Map<Circuit, CircuitBuffer> buffers = new HashMap<>();
+
     public static void cache(Circuit sender, Measurement measurement) {
         CircuitBuffer buffer = buffers.get(sender);
         if (buffer == null) {
@@ -29,17 +30,17 @@ public final class MessageStorage {
         System.out.println(buffers);
     }
 
-    public static boolean isStoring(Circuit circuit){
+    public static boolean isStoring(Circuit circuit) {
         return buffers.containsKey(circuit);
     }
 
-    public static Measurement getInstantMeasurement(Circuit circuit){
-        if (!isStoring(circuit))
-            throw new NoSuchBufferedCircuitException("The circuit " + circuit + " was not buffered. " +
-                    "Try to check isStored() method before calling.");
-        else {
+    public static Measurement getInstantMeasurement(Circuit circuit) {
+        if (isStoring(circuit)) {
             List<Measurement> measurements = buffers.get(circuit).getMeasurements();
             return measurements.get(measurements.size() - 1);
+        } else {
+            throw new NoSuchBufferedCircuitException("The circuit " + circuit + " was not buffered. " +
+                    "Try to check isStored() method before calling.");
         }
     }
 
@@ -63,11 +64,11 @@ public final class MessageStorage {
     }
 
     public static boolean isBufferFull(Circuit sender) {
-         CircuitBuffer buffer = Optional.ofNullable(buffers.get(sender))
-                 .orElseThrow(() ->
-                         new IllegalArgumentException(
-                                 "This circuit was not buffered @id:"
-                                         + sender.getId()));
-         return buffer.isFull();
+        CircuitBuffer buffer = Optional.ofNullable(buffers.get(sender))
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "This circuit was not buffered @id:"
+                                        + sender.getId()));
+        return buffer.isFull();
     }
 }

@@ -18,5 +18,13 @@ public interface SystemService extends Activable {
     List<UserSystems> getAllUsersSystems();
     List<UserSystems> getUserSystemsByUser(Long userId);
 
-    System getSystemById(Long systemId, Long userId);
+    System getSystemById(Long systemId);
+
+    List<System> getAllSystemsByUserId(Long userid);
+
+    System getSystem(Long systemId);
+
+    boolean isUserConnected(Long userId, String systemName);
+
+    boolean isUserConnected(Long userId, Long systemId);
 }

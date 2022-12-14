@@ -33,12 +33,12 @@ public class CircuitController {
     @Autowired
     DeviceService deviceService;
 
-    @GetMapping("/{circuitId}/measurements")
+    @GetMapping("/{circuitId}/measurements/previous/{amount}")
     public ResponseEntity<List<Measurement>> getLastMeasurements(
             @PathVariable(name = "circuitId") Long circuitId,
-            @RequestBody GetLastMeasurementsRequest request) {
+            @PathVariable(name = "amount") Integer amount) {
         //todo security
-        List<Measurement> measurements = circuitService.getLastMeasurements(request.getAmount(), circuitId);
+        List<Measurement> measurements = circuitService.getLastMeasurements(amount, circuitId);
         return new ResponseEntity<>(measurements, HttpStatus.OK);
     }
 

@@ -37,11 +37,11 @@ public class DataMessage implements ReceivedMessage {
         String value1Label = subtopic[0].toLowerCase();
         String value2Label = subtopic[1].toLowerCase();
         time = LocalDateTime.now(); //todo get time
-        if (value1Label.startsWith("v:") && value2Label.startsWith("a:")){
+        if (value1Label.startsWith("v:") && value2Label.startsWith("a:")) {
             voltage = new Voltage(value1);
             current = new Current(value2);
         }
-        else if (value2Label.startsWith("v:") && value1Label.startsWith("a:")){
+        else if (value2Label.startsWith("v:") && value1Label.startsWith("a:")) {
             voltage = new Voltage(value2);
             current = new Current(value1);
         }

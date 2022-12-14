@@ -24,7 +24,6 @@ public class EllicityApplication {
     @Autowired
     MessageProcessor messageProcessor;
 
-
     public static void main(String[] args) {
         SpringApplication.run(EllicityApplication.class, args);
     }

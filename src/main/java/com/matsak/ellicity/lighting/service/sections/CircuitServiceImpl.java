@@ -103,7 +103,7 @@ public class CircuitServiceImpl implements CircuitService {
     }
 
     private void fillLastMeasurements(List<Measurement> measurements, int amount, Circuit circuit) {
-        if (MessageStorage.isStoring(circuit)) {
+        if (MessageStorage.isStoring(circuit) && !MessageStorage.getBufferedMeasurements(circuit).isEmpty()) {
             measurements.add(MessageStorage.getInstantMeasurement(circuit));
         }
         int storedInDatabase = amount - measurements.size();

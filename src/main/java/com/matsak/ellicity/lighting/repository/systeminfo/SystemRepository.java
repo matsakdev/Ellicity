@@ -9,8 +9,8 @@ import java.util.Optional;
 
 @Repository
 public interface SystemRepository extends JpaRepository<System, Long> {
-    @Query("SELECT us FROM UserSystems us WHERE us.id.userId=:id")
-    List<System> findByUserId(Long id);
+    @Query("SELECT us FROM UserSystems us WHERE us.id.userId=:userId")
+    List<System> findAllSystemsByUserId(Long userId);
     Optional<System> findByName(String name);
 
     @Query("SELECT sys FROM System sys" +

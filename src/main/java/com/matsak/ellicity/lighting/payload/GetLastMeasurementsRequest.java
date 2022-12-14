@@ -13,4 +13,6 @@ public class GetLastMeasurementsRequest {
     public void setAmount(Integer amount) {
         this.amount = amount;
     }
+
+    //todo delete if not used
 }

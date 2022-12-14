@@ -2,18 +2,15 @@ package com.matsak.ellicity.lighting.controller;
 
 import com.matsak.ellicity.lighting.entity.sections.Circuit;
 import com.matsak.ellicity.lighting.entity.sections.System;
-import com.matsak.ellicity.lighting.entity.user.User;
+import com.matsak.ellicity.lighting.payload.ApiResponse;
 import com.matsak.ellicity.lighting.payload.ConnectUserToSystemRequest;
 import com.matsak.ellicity.lighting.security.CurrentUser;
 import com.matsak.ellicity.lighting.security.UserPrincipal;
 import com.matsak.ellicity.lighting.service.sections.CircuitService;
-import com.matsak.ellicity.lighting.service.sections.CircuitServiceImpl;
 import com.matsak.ellicity.lighting.service.sections.SystemService;
-import com.matsak.ellicity.lighting.service.sections.SystemServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,10 +24,14 @@ public class SystemController {
     @Autowired
     private CircuitService circuitService;
 
-    @PostMapping("/{id}/adduser")
-    public ResponseEntity<?> connectUserWithSystem(@RequestBody ConnectUserToSystemRequest requestBody, @AuthenticationPrincipal UserPrincipal user) {
+    @PostMapping("/connect")
+    public ApiResponse connectUserWithSystem(@RequestBody ConnectUserToSystemRequest requestBody, @AuthenticationPrincipal UserPrincipal user) {
+        if (systemService.isUserConnected(user.getId(), requestBody.getSystemName())) {
+            return new ApiResponse(false, "This system is already connected!");
+        }
         systemService.connectUser(user.getId(), requestBody.getSystemName(), requestBody.getPassKey());
-        return ResponseEntity.ok().build();
+        //todo check result
+        return new ApiResponse(true, "You've successfully connected with the system");
     }
 
     @GetMapping
@@ -44,10 +45,33 @@ public class SystemController {
         return ResponseEntity.ok(circuits);
     }
 
+    @GetMapping("/{id}/checkuser/{userId}")
+    public ApiResponse checkIfUserConnectedToSystem(@PathVariable(name = "id") Long systemId,
+                                             @PathVariable(name = "userId") Long userId) {
+        if (validateUserAccess(systemId, userId)) {
+            return new ApiResponse(true, "The system is already connected to the user");
+        }
+        else return new ApiResponse(false, "This user don't connected to the system");
+    }
+
+    @GetMapping("/{id}/checkuser/")
+    public ApiResponse checkIfUserConnectedToSystem(@PathVariable(name = "id") Long systemId,
+                                             @AuthenticationPrincipal UserPrincipal principal) {
+        if (validateUserAccess(systemId, principal.getId())) {
+            return new ApiResponse(true, "The system is already connected to the user");
+        }
+        else return new ApiResponse(false, "This user don't connected to the system");
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getSystemById(@PathVariable(name = "id") Long systemId, @CurrentUser UserPrincipal principal) {
-        System circuits = systemService.getSystemById(systemId, principal.getId());
+        validateUserAccess(systemId, principal.getId());
+        System circuits = systemService.getSystemById(systemId);
         return ResponseEntity.ok(circuits);
+    }
+
+    private boolean validateUserAccess(Long systemId, Long userId) {
+        return systemService.isUserConnected(userId, systemId);
     }
 
     @GetMapping("/all")//todo only moderator
