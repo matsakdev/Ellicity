@@ -2,6 +2,9 @@ package com.matsak.ellicity.lighting.service.sections;
 
 import com.matsak.ellicity.lighting.Activable;
 import com.matsak.ellicity.lighting.dto.Measurement;
+import com.matsak.ellicity.lighting.dto.Durations;
+import com.matsak.ellicity.lighting.service.statistics.SystemStatistics;
+import com.matsak.ellicity.lighting.entity.sections.Circuit;
 import com.matsak.ellicity.lighting.entity.sections.System;
 import com.matsak.ellicity.lighting.entity.sections.UserSystems;
 
@@ -27,4 +30,12 @@ public interface SystemService extends Activable {
     boolean isUserConnected(Long userId, String systemName);
 
     boolean isUserConnected(Long userId, Long systemId);
+
+    void updateSystem(System system);
+
+    SystemStatistics getSystemStatistics(Long systemId, Durations prevMonth);
+
+    Double getSystemCost(Long systemId, Durations prevMonth);
+
+    List<Circuit> getCircuits(Long systemId);
 }

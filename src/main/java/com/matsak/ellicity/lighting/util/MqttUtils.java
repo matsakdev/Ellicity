@@ -1,7 +1,5 @@
 package com.matsak.ellicity.lighting.util;
 
-import com.matsak.ellicity.lighting.dto.Measurement;
-import com.matsak.ellicity.lighting.service.sections.CircuitService;
 import com.matsak.ellicity.mqtt.brokers.HiveMQ;
 import com.matsak.ellicity.mqtt.brokers.MqttBroker;
 import com.matsak.ellicity.mqtt.message.MessageProcessor;
@@ -10,10 +8,6 @@ import com.matsak.ellicity.mqtt.message.DataMessage;
 import com.matsak.ellicity.mqtt.message.ReceivedMessage;
 import com.matsak.ellicity.mqtt.message.MqttMessage;
 import com.matsak.ellicity.lighting.config.MqttSettings;
-import org.aspectj.bridge.Message;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
 
 public class MqttUtils {
     private static MqttUtils instance;

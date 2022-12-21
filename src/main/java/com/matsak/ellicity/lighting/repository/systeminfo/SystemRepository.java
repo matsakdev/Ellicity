@@ -1,5 +1,6 @@
 package com.matsak.ellicity.lighting.repository.systeminfo;
 
+import com.matsak.ellicity.lighting.entity.sections.Circuit;
 import com.matsak.ellicity.lighting.entity.sections.System;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
@@ -17,4 +18,7 @@ public interface SystemRepository extends JpaRepository<System, Long> {
             " JOIN FETCH UserSystems us ON us.id.systemId=sys.id" +
             " WHERE us.id.systemId=:systemId AND us.id.userId=:userId")
     Optional<System> findByUserId(Long systemId, Long userId);
+
+    @Query("SELECT circ FROM Circuit circ WHERE circ.system.id=:systemId")
+    List<Circuit> findCircuitsBySystemId(Long systemId);
 }

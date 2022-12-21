@@ -1,9 +1,12 @@
 package com.matsak.ellicity.lighting.controller;
 
+import com.matsak.ellicity.lighting.dto.Durations;
+import com.matsak.ellicity.lighting.dto.SystemStatisticsDto;
 import com.matsak.ellicity.lighting.entity.sections.Circuit;
 import com.matsak.ellicity.lighting.entity.sections.System;
 import com.matsak.ellicity.lighting.payload.ApiResponse;
 import com.matsak.ellicity.lighting.payload.ConnectUserToSystemRequest;
+import com.matsak.ellicity.lighting.payload.SetSystemPrice;
 import com.matsak.ellicity.lighting.security.CurrentUser;
 import com.matsak.ellicity.lighting.security.UserPrincipal;
 import com.matsak.ellicity.lighting.service.sections.CircuitService;
@@ -14,6 +17,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/systems")
@@ -68,6 +72,48 @@ public class SystemController {
         validateUserAccess(systemId, principal.getId());
         System circuits = systemService.getSystemById(systemId);
         return ResponseEntity.ok(circuits);
+    }
+
+    @PostMapping("/{id}/price")
+    public ApiResponse setSystemPrice(@PathVariable(name="id") Long systemId, @RequestBody SetSystemPrice pricePayload) {
+        System system = systemService.getSystem(systemId);
+        Double previousPrice = system.getPrice();
+        system.setPrice(pricePayload.getPrice());
+        systemService.updateSystem(system);
+        if (Objects.equals(pricePayload.getPrice(), previousPrice)) {
+            return new ApiResponse(false, "This tariff is already set");
+        }
+        return new ApiResponse(true, "System tariff updated");
+    }
+
+    @GetMapping("/{id}/price")
+    public Double getSystemPrice(@PathVariable(name="id") Long systemId) {
+        System system = systemService.getSystem(systemId);
+        return system.getPrice();
+    }
+
+    @GetMapping("/{id}/statistics/lastmonth/cost")
+    public Double getLastMonthSystemCost(@PathVariable(name="id") Long systemId){
+        return systemService.getSystemCost(systemId, Durations.PREV_MONTH);
+    }
+
+    @GetMapping("/{id}/statistics/lastyear/cost")
+    public Double getLastYearSystemCost(@PathVariable(name="id") Long systemId){
+        return systemService.getSystemCost(systemId, Durations.PREV_YEAR);
+    }
+
+    @GetMapping("/{id}/statistics/lastmonth")
+    public SystemStatisticsDto getLastMonthSystemStatistics(@PathVariable(name="id") Long systemId){
+        return systemService.getSystemStatistics(systemId, Durations.PREV_MONTH).getDto();
+    }
+
+    @GetMapping("/{id}/statistics/lastyear")
+    public SystemStatisticsDto getLastYearSystemStatistics(@PathVariable(name="id") Long systemId){
+        return systemService.getSystemStatistics(systemId, Durations.PREV_YEAR).getDto();
+    }
+    @GetMapping("/{id}/statistics/actual")
+    public SystemStatisticsDto getCurrentMonthSystemStatistics(@PathVariable(name="id") Long systemId){
+        return systemService.getSystemStatistics(systemId, Durations.CURR_MONTH).getDto();
     }
 
     private boolean validateUserAccess(Long systemId, Long userId) {

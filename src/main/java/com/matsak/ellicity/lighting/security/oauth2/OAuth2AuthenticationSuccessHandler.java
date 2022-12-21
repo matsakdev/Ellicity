@@ -50,7 +50,12 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         }
 
         clearAuthenticationAttributes(request, response);
+        addHeaders(response);
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
+    }
+
+    private void addHeaders(HttpServletResponse response) {
+        response.addHeader("Access-Control-Allow-Origin", "*");
     }
 
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {

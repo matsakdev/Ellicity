@@ -1,17 +1,13 @@
 package com.matsak.ellicity.mqtt.message;
 
-import java.util.List;
-
 public class MqttMessage {
     private final String topic;
     private final String payload;
-
 
     public MqttMessage(String topic, String payload){
         validateMessage(topic, payload);
         this.topic = topic;
         this.payload = payload;
-
     }
 
     public String getTopic() {

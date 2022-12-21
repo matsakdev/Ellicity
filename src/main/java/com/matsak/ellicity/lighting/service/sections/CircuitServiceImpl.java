@@ -1,6 +1,7 @@
 package com.matsak.ellicity.lighting.service.sections;
 
 import com.matsak.ellicity.lighting.dao.sections.CircuitDao;
+import com.matsak.ellicity.lighting.dto.Durations;
 import com.matsak.ellicity.lighting.dto.Measurement;
 import com.matsak.ellicity.lighting.entity.actions.Action;
 import com.matsak.ellicity.lighting.entity.measurements.MeasurementRecord;
@@ -102,6 +103,7 @@ public class CircuitServiceImpl implements CircuitService {
         return circuits;
     }
 
+
     private void fillLastMeasurements(List<Measurement> measurements, int amount, Circuit circuit) {
         if (MessageStorage.isStoring(circuit) && !MessageStorage.getBufferedMeasurements(circuit).isEmpty()) {
             measurements.add(MessageStorage.getInstantMeasurement(circuit));
@@ -133,7 +135,12 @@ public class CircuitServiceImpl implements CircuitService {
     }
 
     @Override
-    public Map<Time, Measurement> getMeasurementsByTimeForLastDays(int daysAmount, Circuit circuit) {
-        return null;
+    public List<MeasurementRecord> getMeasurementsOfLastDays(int daysAmount, Circuit circuit) {
+        return getMeasurementsInDateRange(circuit, LocalDateTime.now().minusDays(daysAmount), LocalDateTime.now());
+    }
+
+    @Override
+    public List<MeasurementRecord> getMeasurementsInDateRange(Circuit circuit, LocalDateTime dateFrom, LocalDateTime dateTo) {
+        return measurementsRepository.findMeasurementsInRange(circuit.getId(), dateFrom, dateTo);
     }
 }

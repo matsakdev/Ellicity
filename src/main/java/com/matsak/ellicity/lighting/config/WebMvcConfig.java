@@ -1,11 +1,13 @@
 package com.matsak.ellicity.lighting.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 public class WebMvcConfig implements WebMvcConfigurer {
-    private final long MAX_AGE_SECS = new AppProperties().getCors().getMaxConnectionTimeSec();
+    @Autowired
+    private AppProperties appProperties;
 
     @Value("${app.cors.allowedOrigins}")
     private String[] allowedOrigins;
@@ -15,8 +17,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins(allowedOrigins)
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
+                .allowedHeaders("*").exposedHeaders("Access-Control-Allow-Origin")
                 .allowCredentials(true)
-                .maxAge(MAX_AGE_SECS);
+                .maxAge(appProperties.getCors().getMaxConnectionTimeSec());
     }
 }
