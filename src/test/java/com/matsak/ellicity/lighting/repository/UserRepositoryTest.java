@@ -2,8 +2,6 @@ package com.matsak.ellicity.lighting.repository;
 
 import com.matsak.ellicity.lighting.entity.user.User;
 import com.matsak.ellicity.lighting.repository.user.UserRepository;
-import com.matsak.ellicity.lighting.security.AuthProvider;
-import com.matsak.ellicity.lighting.security.Authority;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;

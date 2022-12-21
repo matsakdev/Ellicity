@@ -7,7 +7,6 @@ import com.matsak.ellicity.lighting.entity.sections.System;
 import com.matsak.ellicity.lighting.payload.ApiResponse;
 import com.matsak.ellicity.lighting.payload.ConnectUserToSystemRequest;
 import com.matsak.ellicity.lighting.payload.SetSystemPrice;
-import com.matsak.ellicity.lighting.security.CurrentUser;
 import com.matsak.ellicity.lighting.security.UserPrincipal;
 import com.matsak.ellicity.lighting.service.sections.CircuitService;
 import com.matsak.ellicity.lighting.service.sections.SystemService;
@@ -39,12 +38,12 @@ public class SystemController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getUserSystems(@CurrentUser UserPrincipal principal) {
+    public ResponseEntity<?> getUserSystems(UserPrincipal principal) {
         List<System> systems = systemService.getUserSystems(principal.getId());
         return ResponseEntity.ok(systems);
     }
     @GetMapping("/{id}/circuits")
-    public ResponseEntity<?> getUserCircuitsBySystem(@PathVariable(name = "id") Long systemId, @CurrentUser UserPrincipal principal) {
+    public ResponseEntity<?> getUserCircuitsBySystem(@PathVariable(name = "id") Long systemId, UserPrincipal principal) {
         List<Circuit> circuits = circuitService.getUserCircuitsBySystemId(systemId, principal.getId());
         return ResponseEntity.ok(circuits);
     }
@@ -68,7 +67,7 @@ public class SystemController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getSystemById(@PathVariable(name = "id") Long systemId, @CurrentUser UserPrincipal principal) {
+    public ResponseEntity<?> getSystemById(@PathVariable(name = "id") Long systemId, UserPrincipal principal) {
         validateUserAccess(systemId, principal.getId());
         System circuits = systemService.getSystemById(systemId);
         return ResponseEntity.ok(circuits);
@@ -126,7 +125,7 @@ public class SystemController {
     }
 
     @GetMapping("/all_us")
-    public ResponseEntity<?> getUsersSystemsByUser(@CurrentUser UserPrincipal principal) {
+    public ResponseEntity<?> getUsersSystemsByUser(UserPrincipal principal) {
         return ResponseEntity.ok(systemService.getUserSystemsByUser(principal.getId()));
     }
 

@@ -3,7 +3,7 @@ package com.matsak.ellicity.lighting.security;
 import com.matsak.ellicity.lighting.entity.user.User;
 import com.matsak.ellicity.lighting.exceptions.ResourceNotFoundException;
 import com.matsak.ellicity.lighting.repository.user.UserRepository;
-import org.springframework.beans.factory.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

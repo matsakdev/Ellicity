@@ -1,6 +1,6 @@
 package com.matsak.ellicity.lighting.security;
 
-public enum  AuthProvider {
+public enum AuthProvider {
     LOCAL,
     GOOGLE
 }

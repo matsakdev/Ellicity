@@ -3,7 +3,6 @@ package com.matsak.ellicity.lighting.controller;
 import com.matsak.ellicity.lighting.dto.UserDto;
 import com.matsak.ellicity.lighting.payload.ApiResponse;
 import com.matsak.ellicity.lighting.security.Authority;
-import com.matsak.ellicity.lighting.security.CurrentUser;
 import com.matsak.ellicity.lighting.security.UserPrincipal;
 import com.matsak.ellicity.lighting.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +26,13 @@ public class UserController {
 
     @GetMapping("/me")
     @PreAuthorize("hasRole('USER')")
-    public UserDto getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {
+    public UserDto getCurrentUser(UserPrincipal userPrincipal) {
         return userService.findUserById(userPrincipal.getId());
     }
 
     @GetMapping
     @PreAuthorize("hasRole('MANAGER')")
-    public List<UserDto> getAllUsers(@CurrentUser UserPrincipal userPrincipal) {
+    public List<UserDto> getAllUsers(UserPrincipal userPrincipal) {
         return userService.findAllUsers();
     }
 

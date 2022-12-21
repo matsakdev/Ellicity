@@ -1,5 +1,6 @@
 package com.matsak.ellicity.lighting.security.oauth2;
 
+
 import com.matsak.ellicity.lighting.config.AppProperties;
 import com.matsak.ellicity.lighting.exceptions.BadRequestException;
 import com.matsak.ellicity.lighting.security.HttpCookieOAuth2AuthorizationRequestRepository;
@@ -15,12 +16,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
 
 import static com.matsak.ellicity.lighting.security.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
+
 
 @Component
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -44,18 +45,20 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         String targetUrl = determineTargetUrl(request, response, authentication);
 
+
         if (response.isCommitted()) {
             logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
             return;
         }
-
         clearAuthenticationAttributes(request, response);
         addHeaders(response);
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 
     private void addHeaders(HttpServletResponse response) {
-        response.addHeader("Access-Control-Allow-Origin", "*");
+        response.addHeader("Access-Control-Allow-Origin", "*"
+//                new HashSet<>(appProperties.getOauth2().getAuthorizedRedirectUris()).toString()
+        );
     }
 
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
@@ -69,8 +72,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
 
         String token = tokenProvider.createToken(authentication);
-
-        System.out.println(token);
 
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("token", token)
