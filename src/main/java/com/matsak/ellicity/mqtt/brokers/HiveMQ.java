@@ -69,10 +69,6 @@ public class HiveMQ implements MqttBroker {
             messageHandler.accept(new MqttMessage(
                     publish.getTopic().toString(),
                     UTF_8.decode(publish.getPayload().get()).toString()));
-//            System.out.println("Received message: " +
-//                    publish.getTopic() + " -> " +
-//                    UTF_8.decode(publish.getPayload().get()));
-//        }
         });
     }
 

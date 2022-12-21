@@ -1,16 +1,17 @@
 package com.matsak.ellicity.lighting.service;
 
+import com.matsak.ellicity.lighting.dto.UserDto;
 import com.matsak.ellicity.lighting.entity.user.User;
 import com.matsak.ellicity.lighting.entity.sections.System;
+import com.matsak.ellicity.lighting.exceptions.ResourceNotFoundException;
 import com.matsak.ellicity.lighting.repository.systeminfo.SystemRepository;
 import com.matsak.ellicity.lighting.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -37,10 +38,32 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Optional<User> findUserById(Long id) {
+    public UserDto findUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
-        List<System> systems = systemRepository.findByUserId(id);
-        user.ifPresent(usr -> usr.setUserSystems(systems));
-        return user;
+//        List<System> systems = systemRepository.findAllSystemsByUserId(id);
+//        user.ifPresent(usr -> usr.setUserSystems(systems));
+        if (user.isEmpty()) {
+            throw new ResourceNotFoundException("User", "id", id);
+        }
+        return new UserDto(user.get().getId(), user.get().getEmail(), user.get().getName());
+    }
+
+    @Override
+    public void updateUser(UserDto updatedUser) {
+            User user = userRepository.findById(updatedUser.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("User must have id for updating"));
+            user.setEmail(updatedUser.getEmail());
+            user.setName(updatedUser.getName());
+            userRepository.save(user);
+    }
+
+    @Override
+    public List<UserDto> findAllUsers() {
+        return userRepository
+                .findAll()
+                .stream()
+                .map(user -> new UserDto(
+                        user.getId(), user.getEmail(), user.getName())
+                ).collect(Collectors.toList());
     }
 }

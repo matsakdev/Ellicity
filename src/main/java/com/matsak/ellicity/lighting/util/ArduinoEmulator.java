@@ -29,7 +29,8 @@ public final class ArduinoEmulator {
 
     private boolean isWorking = false;
 
-    public ArduinoEmulator(){}
+    public ArduinoEmulator() {
+    }
 
     public ArduinoEmulator(Map<String, TopicType> topics) {
         try {
@@ -60,7 +61,7 @@ public final class ArduinoEmulator {
 //    }
 
     private void sendMessages() {
-        while(true) {
+        while (true) {
             topics.forEach((topic, type) -> {
                 processSending(topic, type);
                 if (!isWorking) return;
@@ -72,13 +73,11 @@ public final class ArduinoEmulator {
         String message = "";
         try {
             if (type.equals(TopicType.DATA_TOPIC)) {
-                message = "v:" + Math.random()*10+215 + ";a:" + Math.random()*16+9;
+                message = "v:" + (Math.random() * 10 + 215) + ";a:" + (Math.random() * 16 + 9);
                 mqttBroker.publish(topic, message);
-            }
-            else if (type.equals(TopicType.DEVICE_TOPIC)) {
+            } else if (type.equals(TopicType.DEVICE_TOPIC)) {
                 sendMessageToDevice(topic, Action.values()[(int) Math.floor(Math.random() * Action.values().length)]);
-            }
-            else {
+            } else {
                 throw new IllegalArgumentException("TYPE DOES NOT EXIST " + type);
             }
             System.out.println(message);
@@ -109,7 +108,7 @@ public final class ArduinoEmulator {
         mqttBroker.receive(data -> MqttUtils.messageHandler(data, messageProcessor));
     }
 
-    public enum TopicType{
+    public enum TopicType {
         DATA_TOPIC, DEVICE_TOPIC
     }
 

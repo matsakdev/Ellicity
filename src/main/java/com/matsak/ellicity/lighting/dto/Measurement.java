@@ -7,9 +7,9 @@ import java.time.*;
 
 public class Measurement {
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-    LocalDateTime time;
-    Voltage voltage;
-    Current current;
+    private LocalDateTime time;
+    private Voltage voltage;
+    private Current current;
     public Measurement(LocalDateTime time, Voltage voltage, Current current) {
         this.time = time;
         this.voltage = voltage;

@@ -3,6 +3,8 @@ package com.matsak.ellicity.lighting.service.measurements;
 import com.matsak.ellicity.lighting.dto.Measurement;
 import com.matsak.ellicity.lighting.entity.measurements.MeasurementRecord;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 

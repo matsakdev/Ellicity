@@ -1,5 +1,7 @@
 package com.matsak.ellicity.lighting.entity.sections;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -10,10 +12,10 @@ public class Circuit{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(name="name")
     private String name;
-    @OneToMany(mappedBy = "circuit")
+    @OneToMany(mappedBy = "circuit", fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<Device> devices;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="system_id", nullable=false)
@@ -44,6 +46,10 @@ public class Circuit{
 
     public void setSystem(System system) {
         this.system = system;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override

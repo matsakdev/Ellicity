@@ -1,5 +1,6 @@
 package com.matsak.ellicity.lighting.entity.sections;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.matsak.ellicity.lighting.Electric;
 import com.sun.istack.NotNull;
 
@@ -21,7 +22,8 @@ public class System implements Electric{
     @Column(name="passKey")
     private String passKey;
 
-
+    @Column(name="price")
+    private Double price;
 
 //    public List<User> getUsers() {
 //        return users;
@@ -38,6 +40,7 @@ public class System implements Electric{
 //            inverseJoinColumns = @JoinColumn(name="user_id"))
 //    private List<User> users;
     @OneToMany(mappedBy = "system", fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<Circuit> electricalCircuits;
 
 
@@ -46,6 +49,12 @@ public class System implements Electric{
     public System(String name, String passKey) {
         this.name = name;
         this.passKey = passKey;
+    }
+
+    public System(String name, String passKey, Double price) {
+        this.name = name;
+        this.passKey = passKey;
+        this.price = price;
     }
 
     public String getName() {
@@ -76,17 +85,25 @@ public class System implements Electric{
         this.electricalCircuits = electricalCircuits;
     }
 
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof System)) return false;
         System system = (System) o;
-        return Objects.equals(id, system.id) && Objects.equals(name, system.name) && Objects.equals(passKey, system.passKey);
+        return Objects.equals(id, system.id) && Objects.equals(name, system.name) && Objects.equals(passKey, system.passKey) && Objects.equals(price, system.price) && Objects.equals(electricalCircuits, system.electricalCircuits);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, passKey);
+        return Objects.hash(id, name, passKey, price, electricalCircuits);
     }
 
     @Override
@@ -95,6 +112,7 @@ public class System implements Electric{
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", passKey='" + passKey + '\'' +
+                ", price='" + price + '\'' +
                 '}';
     }
 }
