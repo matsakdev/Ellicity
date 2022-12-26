@@ -27,6 +27,7 @@ public class MeasurementsDatabaseConfig extends AbstractMongoClientConfiguration
     @Override
     public MongoClient mongoClient() {
         MongoClient client = MongoClients.create(url);
+        System.out.println(url);
         ListDatabasesIterable<Document> databases = client.listDatabases();
         client.listDatabaseNames().forEach((Consumer<String>) System.out::println);
         client.listDatabases().forEach((Consumer<Document>) System.out::println);

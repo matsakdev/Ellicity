@@ -5,7 +5,6 @@ import com.matsak.ellicity.lighting.entity.sections.Circuit;
 import com.matsak.ellicity.lighting.exceptions.NoSuchBufferedCircuitException;
 import com.matsak.ellicity.lighting.service.sections.CircuitService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Collections;
 import java.util.HashMap;
