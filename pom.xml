@@ -11,7 +11,7 @@
     <groupId>com.matsak</groupId>
     <artifactId>ellicity</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>ellicity</name>
     <description>ellicity</description>
     <properties>
