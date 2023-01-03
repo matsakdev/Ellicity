@@ -3,6 +3,7 @@ package com.matsak.ellicity.lighting.controller;
 import com.matsak.ellicity.lighting.dto.Measurement;
 import com.matsak.ellicity.lighting.entity.actions.Action;
 import com.matsak.ellicity.lighting.entity.sections.Circuit;
+import com.matsak.ellicity.lighting.entity.user.User;
 import com.matsak.ellicity.lighting.payload.ApiResponse;
 import com.matsak.ellicity.lighting.security.UserPrincipal;
 import com.matsak.ellicity.lighting.service.sections.CircuitService;
@@ -53,5 +54,11 @@ public class CircuitController {
         }
         circuitOptional.get().getDevices().forEach(device -> deviceService.sendActionToDevice(device, requestedAction));
         return ResponseEntity.ok(new ApiResponse(true, action.toUpperCase()));
+    }
+
+    @GetMapping("/{circuitId}/devices")
+    public ResponseEntity<?> getAllDevicesWithStates(@PathVariable Long circuitId, @AuthenticationPrincipal UserPrincipal principal) {
+        //todo check if user has access
+        return ResponseEntity.ok(circuitService.getDevicesStates(circuitId)) ;
     }
 }

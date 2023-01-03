@@ -48,7 +48,7 @@ public class PreviousMonthSystemStatistics extends SystemStatistics {
             LocalDateTime dateTime = record.getMeasurement().getTime();
             MonthDay key = MonthDay.of(dateTime.getMonth(), dateTime.getDayOfMonth());
             if (key.getDayOfMonth() != 1) {
-                while (key.getDayOfMonth() % 5 != 0) {
+                while (key.getDayOfMonth() % 5 != 0 && key.getDayOfMonth() != 1) {
                     key = MonthDay.of(key.getMonth(), key.getDayOfMonth() - 1);
                 }
             }

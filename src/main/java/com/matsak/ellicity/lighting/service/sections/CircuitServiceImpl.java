@@ -6,18 +6,27 @@ import com.matsak.ellicity.lighting.dto.Measurement;
 import com.matsak.ellicity.lighting.entity.actions.Action;
 import com.matsak.ellicity.lighting.entity.measurements.MeasurementRecord;
 import com.matsak.ellicity.lighting.entity.sections.Circuit;
+import com.matsak.ellicity.lighting.entity.sections.Device;
 import com.matsak.ellicity.lighting.entity.sections.System;
 import com.matsak.ellicity.lighting.repository.measurements.MeasurementsRepository;
 import com.matsak.ellicity.lighting.repository.systeminfo.CircuitRepository;
+import com.matsak.ellicity.lighting.repository.systeminfo.DeviceRepository;
 import com.matsak.ellicity.lighting.repository.systeminfo.UserSystemsRepository;
 import com.matsak.ellicity.lighting.service.buffer.MessageStorage;
 import com.matsak.ellicity.lighting.util.MqttUtils;
 import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
 import java.sql.Time;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -34,10 +43,15 @@ public class CircuitServiceImpl implements CircuitService {
     private UserSystemsRepository userSystemsRepository;
     @Autowired
     private MeasurementsRepository measurementsRepository;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
     @Autowired
     private CircuitDao circuitDAO;
     @Autowired
     private CircuitRepository circuitRepository;
+    @Autowired
+    private DeviceRepository deviceRepository;
 
     @Override
     public void saveCircuitData(Circuit sender, Measurement measurement) {
@@ -56,8 +70,11 @@ public class CircuitServiceImpl implements CircuitService {
                                 sender.getSystem().getId(), sender.getId(),
                                 measurement)
                 )
-                .forEach(msrmnt -> measurementsRepository.save(msrmnt));
-        java.lang.System.out.println("SAVED");
+                .forEach(msrmnt -> {
+                    measurementsRepository.save(msrmnt);
+                    java.lang.System.out.println("SAVED: " + measurementsRepository.findById(msrmnt.getId()));
+                });
+
     }
 
     @Override
@@ -103,6 +120,11 @@ public class CircuitServiceImpl implements CircuitService {
         return circuits;
     }
 
+    @Override
+    public List<Device> getDevicesStates(Long circuitId) {
+        return deviceRepository.findAllByCircuitId(circuitId).orElse(List.of());
+    }
+
 
     private void fillLastMeasurements(List<Measurement> measurements, int amount, Circuit circuit) {
         if (MessageStorage.isStoring(circuit) && !MessageStorage.getBufferedMeasurements(circuit).isEmpty()) {
@@ -141,6 +163,12 @@ public class CircuitServiceImpl implements CircuitService {
 
     @Override
     public List<MeasurementRecord> getMeasurementsInDateRange(Circuit circuit, LocalDateTime dateFrom, LocalDateTime dateTo) {
-        return measurementsRepository.findMeasurementsInRange(circuit.getId(), dateFrom, dateTo);
+        Date dateFromConverted = Date.from(dateFrom.toInstant(ZoneOffset.UTC));
+        Date dateToConverted = Date.from(dateTo.toInstant(ZoneOffset.UTC));
+        Query query = new Query();
+        query.addCriteria(Criteria.where("circuitId").is(circuit.getId()));
+        query.addCriteria(Criteria.where("measurement.time").gte(dateFromConverted).lt(dateToConverted));
+        return mongoTemplate.find(query, MeasurementRecord.class);
+//        return measurementsRepository.findMeasurementsInRange(circuit.getId(), dateFromConverted, dateToConverted);
     }
 }

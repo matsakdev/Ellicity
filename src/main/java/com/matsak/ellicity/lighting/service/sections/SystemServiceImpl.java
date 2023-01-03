@@ -97,8 +97,6 @@ public class SystemServiceImpl implements SystemService{
                 .orElseThrow(() -> new IllegalArgumentException("System @id: " + systemId + " does not exists"));
     }
 
-
-
     @Override
     public boolean isUserConnected(Long userId, String systemName) {
         return userSystemsRepository.isSystemConnectedWithUser(systemName, userId);

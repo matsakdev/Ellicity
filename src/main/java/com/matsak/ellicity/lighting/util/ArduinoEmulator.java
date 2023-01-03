@@ -6,8 +6,14 @@ import com.matsak.ellicity.lighting.service.sections.CircuitService;
 import com.matsak.ellicity.mqtt.brokers.MqttBroker;
 import com.matsak.ellicity.mqtt.message.MessageProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.aggregation.DateOperators;
 import org.springframework.stereotype.Component;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -24,6 +30,23 @@ public final class ArduinoEmulator {
 
     @Autowired
     MessageProcessor messageProcessor;
+
+    private static long pushedCount = 0;
+
+    private LocalDate date = LocalDate.of(2022, 11, 9);
+
+    private CompletableFuture<Void> changeDate = CompletableFuture.runAsync(() -> {
+        try {
+            while (true) {
+                Thread.sleep(15000);
+                long daysToAdd = Math.round(Math.random() * 2 + 1);
+                date = date.plusDays(daysToAdd);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+    });
 
     private Map<String, TopicType> topics = new HashMap<>();
 
@@ -61,31 +84,43 @@ public final class ArduinoEmulator {
 //    }
 
     private void sendMessages() {
+        long counter = 0;
         while (true) {
-            topics.forEach((topic, type) -> {
-                processSending(topic, type);
-                if (!isWorking) return;
-            });
+            try {
+                topics.forEach((topic, type) -> {
+                    processSending(topic, type);
+                    if (!isWorking) return;
+                });
+                counter += topics.size();
+                System.out.println("count added: " + counter);
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
     private void processSending(String topic, TopicType type) {
         String message = "";
-        try {
-            if (type.equals(TopicType.DATA_TOPIC)) {
-                message = "v:" + (Math.random() * 10 + 215) + ";a:" + (Math.random() * 16 + 9);
-                mqttBroker.publish(topic, message);
-            } else if (type.equals(TopicType.DEVICE_TOPIC)) {
-                sendMessageToDevice(topic, Action.values()[(int) Math.floor(Math.random() * Action.values().length)]);
-            } else {
-                throw new IllegalArgumentException("TYPE DOES NOT EXIST " + type);
-            }
-            System.out.println(message);
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+
+        if (type.equals(TopicType.DATA_TOPIC)) {
+            String date = getDate();
+            message = "v:" + (Math.random() * 10 + 215) + ";a:" + (Math.random() * 5 + 9 + ";t:" + date + "-" +
+                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH-mm-ss")));
+            mqttBroker.publish(topic, message);
+            pushedCount++;
+            System.out.println(pushedCount);
+        } else if (type.equals(TopicType.DEVICE_TOPIC)) {
+            sendMessageToDevice(topic, Action.values()[(int) Math.floor(Math.random() * Action.values().length)]);
+        } else {
+            throw new IllegalArgumentException("TYPE DOES NOT EXIST " + type);
         }
     }
+
+    private String getDate() {
+        return date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+    }
+
 
     private void sendMessageToDevice(String topic, Action actionType) {
         mqttBroker.publish(topic, actionType.toString());

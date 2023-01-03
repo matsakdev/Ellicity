@@ -1,7 +1,5 @@
 package com.matsak.ellicity.lighting.entity.sections;
 
-import com.matsak.ellicity.lighting.entity.user.User;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;

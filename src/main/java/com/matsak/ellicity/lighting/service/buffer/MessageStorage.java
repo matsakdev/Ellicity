@@ -25,8 +25,6 @@ public final class MessageStorage {
             buffers.put(sender, buffer);
         }
         buffer.addMeasurement(measurement);
-
-        System.out.println(buffers);
     }
 
     public static boolean isStoring(Circuit circuit) {
@@ -58,6 +56,7 @@ public final class MessageStorage {
                                 ("Circuit @id: " + circuit.getId() + " wasn't buffered")
                 );
         List<Measurement> measurements = List.copyOf(buffer.getMeasurements());
+        System.out.println("WILL SAVE" + measurements);
         buffer.clear();
         return measurements;
     }

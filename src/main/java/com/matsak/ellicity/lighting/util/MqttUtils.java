@@ -16,6 +16,7 @@ public class MqttUtils {
             8883,
             "stanisuck",
             "stas0000"); //todo safety
+    private static long count = 0;
 
     private MqttUtils(){}
 
@@ -37,6 +38,11 @@ public class MqttUtils {
 
     public static void messageHandler(MqttMessage message, MessageProcessor processor){
         ReceivedMessage messageWithDefinedType = processMessage(message, processor);
+
+        System.out.println("RECEIVED TOPIC:" + message.getTopic() + "\n PAYLOAD: " + message.getPayload());
+        count++;
+        if (count % 10 == 0) System.out.println("received count: " + count);
+        if (message.getTopic().equals("1/1")) System.out.println("          1/1 RECEIVED THE MESSAGE " + message.getPayload());
         messageWithDefinedType.process();
     }
 

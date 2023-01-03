@@ -98,12 +98,12 @@ public class System implements Electric{
         if (this == o) return true;
         if (!(o instanceof System)) return false;
         System system = (System) o;
-        return Objects.equals(id, system.id) && Objects.equals(name, system.name) && Objects.equals(passKey, system.passKey) && Objects.equals(price, system.price) && Objects.equals(electricalCircuits, system.electricalCircuits);
+        return Objects.equals(id, system.id) && Objects.equals(name, system.name) && Objects.equals(passKey, system.passKey) && Objects.equals(price, system.price);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, passKey, price, electricalCircuits);
+        return Objects.hash(id, name, passKey, price);
     }
 
     @Override

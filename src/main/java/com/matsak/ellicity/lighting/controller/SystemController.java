@@ -104,7 +104,9 @@ public class SystemController {
 
     @GetMapping("/{id}/statistics/lastmonth")
     public SystemStatisticsDto getLastMonthSystemStatistics(@PathVariable(name="id") Long systemId){
-        return systemService.getSystemStatistics(systemId, Durations.PREV_MONTH).getDto();
+        SystemStatisticsDto statisticsDto = systemService.getSystemStatistics(systemId, Durations.PREV_MONTH).getDto();
+        java.lang.System.out.println("id: " + systemId + statisticsDto);
+        return statisticsDto;
     }
 
     @GetMapping("/{id}/statistics/lastyear")

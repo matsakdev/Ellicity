@@ -63,4 +63,13 @@ public class CircuitBuffer {
     public int hashCode() {
         return Objects.hash(bufferSize, circuit, measurements);
     }
+
+    @Override
+    public String toString() {
+        return "CircuitBuffer{" +
+                "bufferSize=" + bufferSize +
+                ", circuit=" + circuit +
+                ", measurements=" + measurements +
+                '}';
+    }
 }

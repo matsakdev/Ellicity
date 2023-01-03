@@ -5,6 +5,7 @@ import org.bson.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.annotation.*;
 import org.springframework.data.mongodb.config.*;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.*;
 
 import java.util.function.*;
@@ -32,5 +33,10 @@ public class MeasurementsDatabaseConfig extends AbstractMongoClientConfiguration
         client.listDatabaseNames().forEach((Consumer<String>) System.out::println);
         client.listDatabases().forEach((Consumer<Document>) System.out::println);
         return client;
+    }
+
+    @Bean
+    public MongoTemplate mongoTemplate() throws Exception {
+        return new MongoTemplate(mongoClient(), db);
     }
 }

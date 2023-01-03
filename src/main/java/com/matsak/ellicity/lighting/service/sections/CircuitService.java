@@ -6,7 +6,9 @@ import com.matsak.ellicity.lighting.dto.Measurement;
 import com.matsak.ellicity.lighting.entity.actions.Action;
 import com.matsak.ellicity.lighting.entity.measurements.MeasurementRecord;
 import com.matsak.ellicity.lighting.entity.sections.Circuit;
+import com.matsak.ellicity.lighting.entity.sections.Device;
 import com.matsak.ellicity.lighting.payload.DeviceActionRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.sql.Time;
@@ -29,4 +31,6 @@ public interface CircuitService{
     List<Measurement> getMeasurementsByDate(LocalDateTime date, Long circuitId);
 
     List<Circuit> getUserCircuitsBySystemId(Long userId, Long systemId);
+
+    List<Device> getDevicesStates(Long circuitId);
 }

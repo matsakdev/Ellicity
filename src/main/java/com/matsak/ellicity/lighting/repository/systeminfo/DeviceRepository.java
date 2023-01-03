@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -15,4 +16,8 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
             " JOIN FETCH Device dev ON dev.circuit.id = circ.id" +
             " WHERE us.id.userId = :userId AND dev.id = :deviceId")
     Optional<Device> getUserDeviceById(Long userId, Long deviceId);
+
+    @Query("SELECT dev FROM Device dev WHERE" +
+            " dev.circuit.id=:circuitId")
+    Optional<List<Device>> findAllByCircuitId(Long circuitId);
 }
